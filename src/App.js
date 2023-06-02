@@ -1,15 +1,19 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom/cjs/react-router-dom.min';
 import './App.css';
 import Table from './components/Table';
+import Filter from './components/Filter';
+import FilterProvider from './Hooks/FilterProvaider';
 
 function App() {
   return (
-    <div>
-      <Switch>
-        <Route exact path="/" component={ Table } />
-      </Switch>
-    </div>
+
+    <FilterProvider>
+      <div>
+        <Filter />
+        <Table />
+      </div>
+    </FilterProvider>
+
   );
 }
 
