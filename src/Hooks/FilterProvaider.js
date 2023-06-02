@@ -5,7 +5,7 @@ import filterContext from '../context/createContext';
 function Provider({ children }) {
   const [planetsData, setPlanetsData] = useState([]);
   const [inputText, setInputText] = useState('');
-  const [numericFilter, setNumericFilter] = useState(null);
+  const [numericFilters, setNumericFilters] = useState([]);
 
   const refresh = () => {
     fetch('https://swapi.dev/api/planets')
@@ -36,29 +36,32 @@ function Provider({ children }) {
     return filteredData;
   }
 
-  // Aplica o filtro numérico
-  function applyNumericFilter(column, comparison, handleValue) {
-    const filteredData = planetsData.filter((planet) => {
-      // console.log(planet)
-      const planetValue = Number(planet[column]);
-      // console.log(planetValue)
-      if (comparison === 'maior que') {
-        return planetValue > handleValue;
-      } if (comparison === 'menor que') {
-        return planetValue < handleValue;
-      } if (comparison === 'igual a') {
-        return planetValue === handleValue;
-      }
-      return false;
+  // Aplica os filtros numéricos acumulados
+  function applyNumericFilters() {
+    let filteredData = planetsData;
+
+    numericFilters.forEach((filter) => {
+      const { column, comparison, handleValue } = filter;
+
+      filteredData = filteredData.filter((planet) => {
+        const planetValue = Number(planet[column]);
+
+        if (comparison === 'maior que') {
+          return planetValue > handleValue;
+        } if (comparison === 'menor que') {
+          return planetValue < handleValue;
+        } if (comparison === 'igual a') {
+          return planetValue === handleValue;
+        }
+
+        return false;
+      });
     });
+
     return filteredData;
   }
-  const filteredPlanets = numericFilter
-    ? applyNumericFilter(
-      numericFilter.column,
-      numericFilter.comparison,
-      numericFilter.handleValue,
-    )
+
+  const filteredPlanets = numericFilters.length > 0 ? applyNumericFilters()
     : filterPlanets();
 
   const value = {
@@ -66,7 +69,8 @@ function Provider({ children }) {
     inputText,
     handleChangeInputText,
     applyNumericFilter: (column, comparison, handleValue) => {
-      setNumericFilter({ column, comparison, handleValue });
+      const newFilter = { column, comparison, handleValue };
+      setNumericFilters((prevFilters) => [...prevFilters, newFilter]);
     },
   };
 
