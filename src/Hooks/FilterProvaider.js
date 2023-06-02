@@ -51,7 +51,6 @@ function Provider({ children }) {
       }
       return false;
     });
-    console.log(filteredData);
     return filteredData;
   }
   const filteredPlanets = numericFilter
