@@ -4,6 +4,7 @@ import filterContext from '../context/createContext';
 
 function Provider({ children }) {
   const [planetsData, setPlanetsData] = useState([]);
+  const [planetsCopy, setPlanetsCopy] = useState([]);
   const [inputText, setInputText] = useState('');
   const [numericFilters, setNumericFilters] = useState([]);
 
@@ -18,6 +19,7 @@ function Provider({ children }) {
         });
 
         setPlanetsData(modifiedData);
+        setPlanetsCopy(modifiedData);
       })
 
       .catch((err) => console.log(err));
@@ -53,12 +55,21 @@ function Provider({ children }) {
         } if (comparison === 'igual a') {
           return planetValue === handleValue;
         }
-
         return false;
       });
     });
-
+    console.log(numericFilters);
     return filteredData;
+  }
+
+  function removeNumericFilter(filterColun) {
+    if (filterColun) {
+      setNumericFilters((prevFilters) => prevFilters
+        .filter((p) => p.column !== filterColun));
+    } else {
+      setNumericFilters([]);
+      setPlanetsData(planetsCopy);
+    }
   }
 
   const filteredPlanets = numericFilters.length > 0 ? applyNumericFilters()
@@ -68,10 +79,12 @@ function Provider({ children }) {
     planetsData: filteredPlanets,
     inputText,
     handleChangeInputText,
+    removeNumericFilter,
     applyNumericFilter: (column, comparison, handleValue) => {
       const newFilter = { column, comparison, handleValue };
       setNumericFilters((prevFilters) => [...prevFilters, newFilter]);
     },
+
   };
 
   return (

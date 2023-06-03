@@ -3,7 +3,6 @@ import filterContext from '../context/createContext';
 
 export default function Table() {
   const { planetsData } = useContext(filterContext);
-  console.log(planetsData);
   return (
     <div>
       { planetsData ? (

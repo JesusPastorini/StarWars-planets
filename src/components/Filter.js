@@ -2,11 +2,21 @@ import React, { useContext, useState } from 'react';
 import filterContext from '../context/createContext';
 
 export default function Filter() {
-  const { handleChangeInputText, applyNumericFilter } = useContext(filterContext);
+  const { handleChangeInputText,
+    applyNumericFilter,
+    removeNumericFilter,
+  } = useContext(filterContext);
   const [column, setColumn] = useState('population');
   const [comparison, setComparison] = useState('maior que');
   const [value, setValue] = useState('0');
-  const [filterResult, setFilterResult] = useState(null);
+  const [filters, setFilters] = useState([]);
+  const [availableColumns, setAvailableColumns] = useState([
+    'population',
+    'orbital_period',
+    'diameter',
+    'rotation_period',
+    'surface_water',
+  ]);
 
   const handleColumnChange = (event) => {
     setColumn(event.target.value);
@@ -22,18 +32,37 @@ export default function Filter() {
 
   const handleFilterClick = () => {
     applyNumericFilter(column, comparison, Number(value));
-    setFilterResult({ column, comparison, value });
+    setFilters((prevFilters) => [...prevFilters, { column, comparison, value }]);
+    setAvailableColumns((prevColumns) => prevColumns.filter((col) => col !== column));
+    setColumn(availableColumns[0]);
+    console.log(filters);
+  };
+
+  const handleDeleteFilter = (filter) => {
+    setFilters((prevFilters) => prevFilters.filter((f) => f !== filter));
+    setAvailableColumns((prevColumns) => [...prevColumns, filter.column]);
+    removeNumericFilter(filter.column);
+  };
+
+  const handleRemoveAllFilters = () => {
+    setColumn('population');
+    setComparison('maior que');
+    setValue('0');
+    setFilters([]);
+    setAvailableColumns([
+      'population',
+      'orbital_period',
+      'diameter',
+      'rotation_period',
+      'surface_water',
+    ]);
+    removeNumericFilter();
   };
 
   const handleFilterChange = (event) => {
     handleChangeInputText(event.target.value);
   };
 
-  const optionsColumn = [
-    'population',
-    'orbital_period',
-    'diameter', 'rotation_period',
-    'surface_water'];
   const optionsCompar = ['maior que', 'menor que', 'igual a'];
   return (
     <div>
@@ -45,8 +74,12 @@ export default function Filter() {
         />
       </div>
       <div>
-        <select onChange={ handleColumnChange } data-testid="column-filter">
-          {optionsColumn.map((option) => (
+        <select
+          onChange={ handleColumnChange }
+          value={ column }
+          data-testid="column-filter"
+        >
+          {availableColumns.map((option) => (
             <option key={ option } value={ option }>
               {option}
             </option>
@@ -72,14 +105,24 @@ export default function Filter() {
           Filtrar
         </button>
       </div>
-      {filterResult && (
-        <span>
-          {filterResult.column}
-          {' '}
-          {filterResult.comparison}
-          {' '}
-          {filterResult.value}
-        </span>
+      {filters.map((filter, index) => (
+        <div key={ index } data-testid="filter">
+          <span>
+            {filter.column}
+            {' '}
+            {filter.comparison}
+            {' '}
+            {filter.value}
+          </span>
+          <button onClick={ () => handleDeleteFilter(filter) }>
+            Remover Filtro
+          </button>
+        </div>
+      ))}
+      {filters.length > 0 && (
+        <button onClick={ handleRemoveAllFilters } data-testid="button-remove-filters">
+          Remover Todas as Filtragens
+        </button>
       )}
     </div>
   );
