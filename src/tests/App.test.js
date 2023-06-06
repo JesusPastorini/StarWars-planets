@@ -1,9 +1,14 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import App from '../App';
 
-test('I am your test', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/Hello, App!/i);
-  expect(linkElement).toBeInTheDocument();
+describe('App', () => {
+  test('renders App component', () => {
+    const { getByTestId } = render(<App />);
+    const filterComponent = getByTestId('name-filter');
+    const tableComponent = getByTestId('name-filter');
+
+    expect(filterComponent).toBeInTheDocument();
+    expect(tableComponent).toBeInTheDocument();
+  });
 });

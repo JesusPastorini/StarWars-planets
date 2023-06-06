@@ -7,7 +7,7 @@ function Provider({ children }) {
   const [planetsCopy, setPlanetsCopy] = useState([]);
   const [inputText, setInputText] = useState('');
   const [numericFilters, setNumericFilters] = useState([]);
-
+  console.log(numericFilters);
   const refresh = () => {
     fetch('https://swapi.dev/api/planets')
       .then((result) => result.json())
@@ -20,9 +20,7 @@ function Provider({ children }) {
 
         setPlanetsData(modifiedData);
         setPlanetsCopy(modifiedData);
-      })
-
-      .catch((err) => console.log(err));
+      });
   };
   useEffect(() => {
     refresh();
@@ -58,7 +56,6 @@ function Provider({ children }) {
         return false;
       });
     });
-    console.log(numericFilters);
     return filteredData;
   }
 
