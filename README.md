@@ -1,4 +1,6 @@
-# 🚀 Projeto: Star Wars Planets Search
+# 🚀 Projeto: Star Wars Planets
+
+![StarWars](src/projectIntro.gif)
 
 Bem-vindo ao repositório do projeto Star Wars Planets Search! Este projeto consiste no desenvolvimento de uma lista com filtros de planetas do universo de Star Wars utilizando Context API e Hooks para controlar os estados globais.
 
