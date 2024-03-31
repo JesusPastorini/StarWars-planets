@@ -8,7 +8,7 @@ O Star Wars Planets Search é uma aplicação que permite aos usuários visualiz
 
 ## 📸 Imagem da Aplicação
 
-![StarWars](projectIntro.gif)
+![StarWars](req-9.gif)
 
 ## 🔧 Linguagens, Ferramentas e Frameworks Utilizados
 
